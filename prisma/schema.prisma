@@ -1,0 +1,88 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model Restaurant {
+  id             String         @id @default(uuid())
+  name           String
+  slug           String         @unique
+  description    String
+  avatarImageUrl String
+  coverImageUrl  String
+  menuCategories MenuCategory[]
+  products       Product[]
+  orders         Order[]
+  createdAt      DateTime       @default(now())
+  updatedAt      DateTime       @updatedAt
+}
+
+model MenuCategory {
+  id           String    @id @default(uuid())
+  name         String
+  restaurantId String
+  products     Product[]
+  createdAt    DateTime  @default(now())
+  updatedAt    DateTime  @updatedAt
+
+  restaurant Restaurant @relation(fields: [restaurantId], references: [id])
+}
+
+model Product {
+  id             String         @id @default(uuid())
+  restaurantId   String
+  restaurant     Restaurant     @relation(fields: [restaurantId], references: [id])
+  menuCategoryId String
+  menuCategory   MenuCategory   @relation(fields: [menuCategoryId], references: [id])
+  orderProducts  OrderProduct[]
+  name           String
+  description    String
+  price          Float
+  ingredients    String[]
+  imageUrl       String
+  createdAt      DateTime       @default(now())
+  updatedAt      DateTime       @updatedAt
+}
+
+model Order {
+  id                Int               @id @default(autoincrement())
+  restaurantId      String
+  restaurant        Restaurant        @relation(fields: [restaurantId], references: [id])
+  total             Float
+  status            OrderStatus
+  consunptionMethod ConsunptionMethod
+  orderProducts     OrderProduct[]
+}
+
+model OrderProduct {
+  id        String   @id @default(uuid())
+  orderId   Int
+  order     Order    @relation(fields: [orderId], references: [id])
+  productId String
+  product   Product  @relation(fields: [productId], references: [id])
+  quantity  Int
+  price     Float
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+enum OrderStatus {
+  PENDING
+  IN_PROGRESS
+  COMPLETED
+}
+
+enum ConsunptionMethod {
+  TAKEAWAY
+  DINE_IN
+}
