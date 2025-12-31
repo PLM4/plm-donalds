@@ -60,7 +60,7 @@ model Order {
   restaurant        Restaurant        @relation(fields: [restaurantId], references: [id], onDelete: Cascade)
   total             Float
   status            OrderStatus
-  consunptionMethod ConsunptionMethod
+  consumptionMethod ConsumptionMethod
   orderProducts     OrderProduct[]
 }
 
@@ -82,7 +82,7 @@ enum OrderStatus {
   COMPLETED
 }
 
-enum ConsunptionMethod {
+enum ConsumptionMethod {
   TAKEAWAY
   DINE_IN
 }
