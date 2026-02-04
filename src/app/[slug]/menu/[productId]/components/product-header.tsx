@@ -15,7 +15,7 @@ const ProductHeader = ({ product }: ProductHeaderProps) => {
   const router = useRouter();
   const handleBackClick = () => router.back();
   return (
-    <div className="relative h-[300px] w-full">
+    <div className="relative min-h-[300px] w-full">
       <Button
         variant="secondary"
         size="icon"
@@ -24,13 +24,14 @@ const ProductHeader = ({ product }: ProductHeaderProps) => {
       >
         <ChevronLeftIcon />
       </Button>
+
       <Image
         src={product.imageUrl}
         alt={product.name}
         fill
         className="object-contain"
-        priority
       />
+
       <Button
         variant="secondary"
         size="icon"

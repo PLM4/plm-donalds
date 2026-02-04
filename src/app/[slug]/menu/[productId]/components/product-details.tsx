@@ -37,9 +37,8 @@ const ProductDetails = ({ product }: ProductDetailsProps) => {
   };
   return (
     <>
-      <div className="relative z-50 mt-[-1.5rem] flex flex-auto flex-col overflow-hidden rounded-t-3xl p-5">
-        <div className="flex-auto overflow-hidden">
-          {/* RESTAURANTE */}
+      <div className="relative z-50 mt-[-1.5rem] flex h-full flex-col overflow-hidden rounded-t-3xl p-5">
+        <div className="flex flex-1 flex-col overflow-hidden">
           <div className="flex items-center gap-1.5">
             <Image
               src={product.restaurant.avatarImageUrl}
@@ -53,10 +52,8 @@ const ProductDetails = ({ product }: ProductDetailsProps) => {
             </p>
           </div>
 
-          {/* NOME DO PRODUTO */}
           <h2 className="mt-1 text-xl font-semibold">{product.name}</h2>
 
-          {/* PREÇO E QUANTIDADE */}
           <div className="mt-3 flex items-center justify-between">
             <h3 className="text-xl font-semibold">
               {formatCurrency(product.price)}
@@ -80,8 +77,7 @@ const ProductDetails = ({ product }: ProductDetailsProps) => {
             </div>
           </div>
 
-          <ScrollArea className="h-full">
-            {/* SOBRE */}
+          <ScrollArea className="flex-1">
             <div className="mt-6 space-y-3">
               <h4 className="font-semibold">Sobre</h4>
               <p className="text-sm text-muted-foreground">
@@ -89,7 +85,6 @@ const ProductDetails = ({ product }: ProductDetailsProps) => {
               </p>
             </div>
 
-            {/* INGREDIENTS */}
             <div className="mt-6 space-y-3">
               <div className="5 flex items-center gap-1">
                 <ChefHatIcon size={18} />
@@ -104,7 +99,7 @@ const ProductDetails = ({ product }: ProductDetailsProps) => {
           </ScrollArea>
         </div>
 
-        <Button className="w-full rounded-full">Adicionar à sacola</Button>
+        <Button className="mt-2 w-full rounded-full">Adicionar à sacola</Button>
       </div>
     </>
   );
