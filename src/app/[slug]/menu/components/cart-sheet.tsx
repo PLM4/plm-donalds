@@ -21,8 +21,8 @@ const CartSheet = () => {
         </SheetHeader>
         <div className="py-3">
           {products.map((product) => (
-            <div className="py-2">
-              <CartProductItem key={product.id} product={product} />
+            <div key={product.id} className="py-2">
+              <CartProductItem product={product} />
             </div>
           ))}
         </div>
