@@ -1,6 +1,7 @@
+import { db } from "@/lib/prisma";
+
 import { isValidCpf, removeCpfPunctuation } from "../menu/helpers/cpf";
 import CpfForm from "./components/cpf-form";
-import { db } from "@/lib/prisma";
 import OrderList from "./components/order-list";
 
 interface OrdersPageProps {
