@@ -31,6 +31,7 @@ const OrdersPage = async ({ searchParams }: OrdersPageProps) => {
         select: {
           name: true,
           avatarImageUrl: true,
+          slug: true
         },
       },
       orderProducts: {
