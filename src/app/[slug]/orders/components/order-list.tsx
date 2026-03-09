@@ -3,7 +3,7 @@
 import { OrderStatus, Prisma } from "@prisma/client";
 import { ChevronLeftIcon, ScrollTextIcon } from "lucide-react";
 import Image from "next/image";
-import { useRouter } from "next/navigation";
+import { useParams, useRouter, useSearchParams } from "next/navigation";
 
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
@@ -18,6 +18,7 @@ interface OrderListProps {
           select: {
             name: true;
             avatarImageUrl: true;
+            slug: true
           };
         };
         orderProducts: {
@@ -41,7 +42,13 @@ const getStatusLabel = (status: OrderStatus) => {
 
 const OrderList = ({ orders }: OrderListProps) => {
   const router = useRouter();
-  const handleBackClick = () => router.back();
+  const searchParams = useSearchParams();
+  const consumptionMethod = searchParams.get("consumptionMethod");
+  const { slug } = useParams<{ slug: string }>();
+
+  const handleBackClick = () => {
+    router.push(`/${slug}/menu?consumptionMethod=${consumptionMethod}`);
+  };
 
   return (
     <div className="space-y-6 p-6">
@@ -61,7 +68,7 @@ const OrderList = ({ orders }: OrderListProps) => {
         <Card key={order.id}>
           <CardContent className="space-y-4 p-5">
             <div
-              className={`w-fit rounded-full px-2 py-1 text-xs font-semibold text-white ${order.status === OrderStatus.COMPLETED ? "bg-green-500 text-white" : "bg-gray-200 text-gray-500"}`}
+              className={`w-fit rounded-full px-2 py-1 text-xs font-semibold text-white ${([OrderStatus.PAYMENT_CONFIRMED] as OrderStatus[]).includes(order.status) ? "bg-green-500 text-white" : "bg-gray-200 text-gray-500"}`}
             >
               {getStatusLabel(order.status)}
             </div>

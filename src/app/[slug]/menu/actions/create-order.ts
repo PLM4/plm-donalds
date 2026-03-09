@@ -2,7 +2,6 @@
 
 import { ConsumptionMethod } from "@prisma/client";
 import { revalidatePath } from "next/cache";
-import { redirect } from "next/navigation";
 
 import { db } from "@/lib/prisma";
 
@@ -13,7 +12,6 @@ interface CreateOrderInput {
   customerCpf: string;
   products: Array<{
     id: string;
-    price: number;
     quantity: number;
   }>;
   consumptionMethod: ConsumptionMethod;
@@ -26,45 +24,39 @@ export const CreateOrder = async (input: CreateOrderInput) => {
       slug: input.slug,
     },
   });
-
   if (!restaurant) {
-    throw new Error("Restaurante não encontrado.");
+    throw new Error("Restaurant not found");
   }
-
-  const productsWithPrice = await db.product.findMany({
+  const productsWithPrices = await db.product.findMany({
     where: {
       id: {
         in: input.products.map((product) => product.id),
       },
     },
   });
-
-  const productsWithPriceAndQuantity = input.products.map((product) => ({
+  const productsWithPricesAndQuantities = input.products.map((product) => ({
     productId: product.id,
     quantity: product.quantity,
-    price: productsWithPrice.find((p) => p.id === product.id)!.price,
+    price: productsWithPrices.find((p) => p.id === product.id)!.price,
   }));
-
-  await db.order.create({
+  const order = await db.order.create({
     data: {
-      consumptionMethod: input.consumptionMethod,
       status: "PENDING",
       customerName: input.customerName,
       customerCpf: removeCpfPunctuation(input.customerCpf),
       orderProducts: {
         createMany: {
-          data: productsWithPriceAndQuantity,
+          data: productsWithPricesAndQuantities,
         },
       },
-      total: productsWithPriceAndQuantity.reduce(
+      total: productsWithPricesAndQuantities.reduce(
         (acc, product) => acc + product.price * product.quantity,
         0,
       ),
+      consumptionMethod: input.consumptionMethod,
       restaurantId: restaurant.id,
     },
   });
-
   revalidatePath(`/${input.slug}/orders`);
-
-  redirect(`/${input.slug}/orders?${removeCpfPunctuation(input.customerCpf)}`);
+  return order;
 };
